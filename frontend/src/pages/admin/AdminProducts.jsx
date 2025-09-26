@@ -3,7 +3,13 @@ import api from "../../api/axios";
 
 export default function AdminProducts() {
   const [products, setProducts] = useState([]);
-  const [form, setForm] = useState({ name: "", category: "", price: "", stock: "" });
+  const [form, setForm] = useState({
+    name: "",
+    description: "",
+    category: "",
+    unit: "",
+    basePrice: "",
+  });
   const [editing, setEditing] = useState(null);
 
   // Fetch products
@@ -16,7 +22,7 @@ export default function AdminProducts() {
       const res = await api.get("/products");
       setProducts(res.data);
     } catch (err) {
-      console.error(err);
+      console.error("Fetch products error:", err.response?.data || err.message);
     }
   };
 
@@ -32,20 +38,21 @@ export default function AdminProducts() {
       } else {
         await api.post("/products", form);
       }
-      setForm({ name: "", category: "", price: "", stock: "" });
+      setForm({ name: "", description: "", category: "", unit: "", basePrice: "" });
       setEditing(null);
       fetchProducts();
     } catch (err) {
-      console.error(err);
+      console.error("Submit product error:", err.response?.data || err.message);
     }
   };
 
   const handleEdit = (product) => {
     setForm({
       name: product.name,
+      description: product.description || "",
       category: product.category,
-      price: product.price,
-      stock: product.stock,
+      unit: product.unit,
+      basePrice: product.basePrice,
     });
     setEditing(product._id);
   };
@@ -56,7 +63,7 @@ export default function AdminProducts() {
       await api.delete(`/products/${id}`);
       fetchProducts();
     } catch (err) {
-      console.error(err);
+      console.error("Delete product error:", err.response?.data || err.message);
     }
   };
 
@@ -78,6 +85,14 @@ export default function AdminProducts() {
           />
           <input
             type="text"
+            name="description"
+            placeholder="Description"
+            value={form.description}
+            onChange={handleChange}
+            className="border p-2 rounded"
+          />
+          <input
+            type="text"
             name="category"
             placeholder="Category"
             value={form.category}
@@ -86,19 +101,19 @@ export default function AdminProducts() {
             required
           />
           <input
-            type="number"
-            name="price"
-            placeholder="Price"
-            value={form.price}
+            type="text"
+            name="unit"
+            placeholder="Unit (e.g. kg, pcs)"
+            value={form.unit}
             onChange={handleChange}
             className="border p-2 rounded"
             required
           />
           <input
             type="number"
-            name="stock"
-            placeholder="Stock"
-            value={form.stock}
+            name="basePrice"
+            placeholder="Base Price"
+            value={form.basePrice}
             onChange={handleChange}
             className="border p-2 rounded"
             required
@@ -117,9 +132,10 @@ export default function AdminProducts() {
         <thead>
           <tr className="bg-gray-200">
             <th className="p-2 text-left">Name</th>
+            <th className="p-2 text-left">Description</th>
             <th className="p-2 text-left">Category</th>
-            <th className="p-2 text-left">Price</th>
-            <th className="p-2 text-left">Stock</th>
+            <th className="p-2 text-left">Unit</th>
+            <th className="p-2 text-left">Base Price</th>
             <th className="p-2 text-left">Actions</th>
           </tr>
         </thead>
@@ -128,9 +144,10 @@ export default function AdminProducts() {
             products.map((p) => (
               <tr key={p._id} className="border-t">
                 <td className="p-2">{p.name}</td>
+                <td className="p-2">{p.description}</td>
                 <td className="p-2">{p.category}</td>
-                <td className="p-2">${p.price}</td>
-                <td className="p-2">{p.stock}</td>
+                <td className="p-2">{p.unit}</td>
+                <td className="p-2">${p.basePrice}</td>
                 <td className="p-2">
                   <button
                     onClick={() => handleEdit(p)}
@@ -149,7 +166,7 @@ export default function AdminProducts() {
             ))
           ) : (
             <tr>
-              <td className="p-2 text-center" colSpan="5">
+              <td className="p-2 text-center" colSpan="6">
                 No products found
               </td>
             </tr>

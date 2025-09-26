@@ -2,16 +2,19 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL: "http://localhost:5000/api",
-  withCredentials: true, // 🔑 important
+  withCredentials: true,
 });
 
-// Add token if available
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  const user = localStorage.getItem("user");
+  if (user) {
+    const parsedUser = JSON.parse(user);
+    if (parsedUser.token) {
+      config.headers.Authorization = `Bearer ${parsedUser.token}`;
+    }
   }
   return config;
 });
+
 
 export default api;

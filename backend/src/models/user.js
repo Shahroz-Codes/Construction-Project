@@ -42,3 +42,13 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
 
 const User = mongoose.model("User", userSchema);
 export default User;
+
+
+// $2a$10$hHoR1n37aKcFtRMPDqOkzeBC2bGvZjGC6fJONgsQ7uQUArh3fNUjy
+// db.users.insertOne({
+//   name: "Admin1",
+//   email: "admin@admin.com",
+//   password: "$2a$10$hHoR1n37aKcFtRMPDqOkzeBC2bGvZjGC6fJONgsQ7uQUArh3fNUjy",
+//   role: "admin",
+//   createdAt: new Date()
+// })

@@ -1,12 +1,22 @@
 import express from "express";
+
 import {
   createProduct,
   getProducts,
   getProductById,
+  updateProduct,
+  deleteProduct,
   addSupplierToProduct,
   updateSupplierForProduct,
 } from "../controllers/productController.js";
-import { protect, adminOnly } from "../middleware/authMiddleware.js";
+
+
+
+import {
+  protect,
+  adminOnly,
+  adminOrWholesaler,
+} from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
@@ -14,11 +24,13 @@ const router = express.Router();
 router.get("/", getProducts);
 router.get("/:id", getProductById);
 
-// Admin
+// Admin only routes
 router.post("/", protect, adminOnly, createProduct);
+router.put("/:id", protect, adminOnly, updateProduct);
+router.delete("/:id", protect, adminOnly, deleteProduct);
 
-// Wholesalers
-router.put("/:id/suppliers", protect, addSupplierToProduct);
-router.put("/:id/suppliers/update", protect, updateSupplierForProduct);
+// Wholesalers (suppliers)
+router.put("/:id/suppliers", protect, adminOrWholesaler, addSupplierToProduct);
+router.put("/:id/suppliers/update", protect, adminOrWholesaler, updateSupplierForProduct);
 
 export default router;

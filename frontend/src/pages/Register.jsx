@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext"; // ✅ import context
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -15,6 +16,7 @@ export default function Register() {
   const [success, setSuccess] = useState("");
 
   const navigate = useNavigate();
+  const { register } = useAuth(); // ✅ use register from context
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -40,19 +42,17 @@ export default function Register() {
         { withCredentials: true }
       );
 
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          _id: res.data._id,
-          name: res.data.name,
-          email: res.data.email,
-          role: res.data.role,
-        })
-      );
+      // ✅ call AuthContext instead of localStorage directly
+      register({
+        _id: res.data._id,
+        name: res.data.name,
+        email: res.data.email,
+        role: res.data.role,
+        token: res.data.token,
+      });
 
       setSuccess(res.data.message || "Registration successful ✅");
-      setError(""); // clear old errors
+      setError(""); 
 
       // redirect after short delay (optional)
       setTimeout(() => {
@@ -65,9 +65,7 @@ export default function Register() {
       setError(err.response?.data?.message || "Registration failed");
       setSuccess("");
     }
-
   };
-
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
@@ -89,7 +87,6 @@ export default function Register() {
         {success && (
           <p className="bg-green-100 text-green-600 p-2 mb-2 rounded">{success}</p>
         )}
-
 
         <input
           type="text"
