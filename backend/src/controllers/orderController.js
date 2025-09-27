@@ -1,5 +1,5 @@
 import Order from "../models/Order.js";
-import Product from "../models/product.js";
+import Product from "../models/Product.js";
 
 // Generate custom order number (e.g., ORD-2025-0001)
 const generateOrderNumber = async () => {
