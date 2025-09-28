@@ -1,9 +1,14 @@
-import React from 'react'
+// src/pages/admin/DashboardAdmin.jsx
+import React from "react";
 
-function DashboardCustomer() {
+const DashboardCustomer = () => {
   return (
-    <div>DashboardCustomer</div>
-  )
-}
+    <div className="p-6">
+      <h1 className="text-2xl font-bold">Welcome,</h1>
+      <p className="mt-2 text-gray-600">
+      </p>
+    </div>
+  );
+};
 
-export default DashboardCustomer
+export default DashboardCustomer;
